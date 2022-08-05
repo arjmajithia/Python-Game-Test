@@ -1,0 +1,11 @@
+*.aux
+*.log
+*.gz
+*.bbl
+*.blg
+*.DS_Store
+*.fdb_latexmk
+*.fls
+*.xdv
+*.venv
+*.vscode
