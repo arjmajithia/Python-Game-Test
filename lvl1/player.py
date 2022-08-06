@@ -42,12 +42,15 @@ class Player(Entity):
 	 self.magic_indx = 0
 	 self.magic = list(magic_data.keys())[self.magic_indx]
 
-	 self.stats = {'health':100, 'energy':60, 'attack': 10, 'magic':4, 'speed':5, 'mp_recovery': 0.01}
+	 self.stats = {'health':100, 'energy':60, 'attack': 10, 'magic':4, 'speed':5, 'mp recovery': 0.01}
+	 self.max_stats = {'health':600, 'energy':200, 'attack': 40, 'magic': 20, 'speed': 10, 'mp recovery': 0.6}
+	 self.upgrade_cost = {'health':100, 'energy':100, 'attack': 100, 'magic':100, 'speed':100, 'mp recovery': 100}
+	 self.upgrade_amount = {'health':50, 'energy':15, 'attack': 5, 'magic':4, 'speed':1, 'mp recovery': 0.03}
 	 self.health = self.stats['health']
 	 self.energy = self.stats['energy']
 	 self.speed = self.stats['speed']
-	 self.mp_recovery = self.stats['mp_recovery']
-	 self.exp = 120
+	 self.mp_recovery = self.stats['mp recovery']
+	 self.exp = 6000
 
 	 self.vulnerable = True
 	 self.hurt_time = None
@@ -141,6 +144,13 @@ class Player(Entity):
 				self.status = self.status.replace('_attack', '')
 
 
+	def value_by_index(self, index, get_type):
+		if get_type == 'cost':
+			return list(self.upgrade_cost.values())[index]
+		elif get_type == 'value':
+			return list(self.stats.values())[index]
+
+
 	def animate(self):
 		animation = self.animations[self.status]
 		self.frame_indx += self.anim_speed
@@ -212,7 +222,7 @@ class Player(Entity):
 
 	def energy_recovery(self):
 		if self.energy < self.stats['energy']:
-			self.energy += self.mp_recovery
+			self.energy += self.stats['mp recovery']
 		else:
 			self.energy = self.stats['energy']
 

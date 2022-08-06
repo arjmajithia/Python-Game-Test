@@ -4,7 +4,7 @@ from entity import Entity
 from support import *
 
 class Enemy(Entity):
-	def __init__(self, name, pos, groups, obstacle_sprites, damage_player, death_particles):
+	def __init__(self, name, pos, groups, obstacle_sprites, damage_player, death_particles, add_exp):
 		super().__init__(groups)
 		self.sprite_type = 'enemy'
 		self.status = 'idle'
@@ -38,6 +38,7 @@ class Enemy(Entity):
 		self.attack_switch = True
 		self.attack_cd = 600
 		self.attack_time = None
+		self.add_exp = add_exp
 		self.death_particles = death_particles
 
 	def import_graphics(self, name):
@@ -108,13 +109,13 @@ class Enemy(Entity):
 			elif atk_sprite_type == 'particle':
 				self.health -= dmg
 				self.hit_knockback = hknock
-				print(self.health)
 			self.attacked_time = pygame.time.get_ticks()
 			self.vulnerable = False
 
 	def check_death(self):
 		if self.health <= 0:
 			self.kill()
+			self.add_exp(amount = self.exp)
 			self.death_particles(self.rect.center, self.name)
 
 	def struck(self, hit_knockback):

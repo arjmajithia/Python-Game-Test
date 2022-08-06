@@ -48,8 +48,6 @@ class Magic:
 				# elif direction.y:
 				# 	pos = player.rect.center + (direction *(i*TILESIZE))
 				# 	self.animation_player.generate_particle(pos, groups, 'flame')
-
-			print('FIRE!')
 		else:
 			self.no_juice(player, groups, offset)
 

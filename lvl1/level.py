@@ -9,6 +9,7 @@ from weapon import Weapon
 from enemy import Enemy
 from ui import UI
 from magic import Magic
+from upgrade import Upgrade
 from particles import *
 
 class SortYCameraGroup(pygame.sprite.Group):
@@ -42,15 +43,18 @@ class SortYCameraGroup(pygame.sprite.Group):
 
 class Level:
 	def __init__(self):
+		#self.player = None
 		self.display_surface = pygame.display.get_surface()
 
 		self.visible_sprites = SortYCameraGroup()
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.attack_sprites = pygame.sprite.Group()
 		self.attackable_sprites = pygame.sprite.Group()
+		self.game_paused = False
 
 		self.current_attack = None
 		self.ui = UI()
+		#self.upgrade = Upgrade(self.player)
 		self.create_map()
 
 		self.animation_player = AnimationPlayer()
@@ -85,12 +89,13 @@ class Level:
 						if style == 'entities':
 							if col == '394':
 								self.player = Player((x,y), [self.visible_sprites], self.obstacle_sprites, self.create_attack, self.destroy_attack, self.create_magic)
+								self.upgrade = Upgrade(self.player)
 							else:
 								if col == '390': monster_name = 'bamboo'
 								elif col == '391': monster_name = 'spirit'
 								elif col == '392': monster_name = 'raccoon'
 								else: monster_name = 'squid'
-								Enemy(monster_name, (x,y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, self.damage_player, self.death_particles)
+								Enemy(monster_name, (x,y), [self.visible_sprites, self.attackable_sprites], self.obstacle_sprites, self.damage_player, self.death_particles, self.add_exp)
 		# for row_indx, row in enumerate(WORLD_MAP):
 		# 	for col_indx, col in enumerate(row):
 		# 		x = col_indx * TILESIZE
@@ -102,6 +107,9 @@ class Level:
 
 	def create_attack(self):
 		self.current_attack = Weapon(self.player,[self.visible_sprites, self.attack_sprites])
+
+	def toggle_menu(self):
+		self.game_paused = not self.game_paused
 
 	def create_magic(self, style, strength, cost):
 		#self.current_attack = Weapon(self.player,[self.visible_sprites, self.attack_sprites])
@@ -126,6 +134,9 @@ class Level:
 			self.current_attack.kill()
 			self.current_attack = None
 
+	def add_exp(self, amount):
+		self.player.exp += amount
+
 	def death_particles(self, pos, p_type):
 		self.animation_player.generate_particle(pos, [self.visible_sprites], p_type)
 
@@ -146,7 +157,11 @@ class Level:
 
 	def run(self):
 		self.visible_sprites.custom_draw(self.player)
-		self.visible_sprites.update()
-		self.visible_sprites.enemy_update(self.player)
-		self.attack_logic()
 		self.ui.display(self.player)
+		if self.game_paused:
+			self.upgrade.display()
+		else:
+			self.visible_sprites.update()
+			self.visible_sprites.enemy_update(self.player)
+			self.attack_logic()
+		
