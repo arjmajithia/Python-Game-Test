@@ -41,6 +41,13 @@ class Enemy(Entity):
 		self.add_exp = add_exp
 		self.death_particles = death_particles
 
+		self.attack_sound = pygame.mixer.Sound(self.stats['attack_sound'])
+		self.struck_sound = pygame.mixer.Sound('../audio/hit.wav')
+		self.death_sound = pygame.mixer.Sound('../audio/death.wav')
+		self.death_sound.set_volume(0.2)
+		self.attack_sound.set_volume(0.2)
+		self.struck_sound.set_volume(0.2)
+
 	def import_graphics(self, name):
 		self.animations = {'idle': [], 'move': [], 'attack': []}
 		main_path = f'../graphics/monsters/{name}/'
@@ -72,6 +79,7 @@ class Enemy(Entity):
 		if self.status == 'attack':
 			self.attack_time = pygame.time.get_ticks()
 			self.damage_player(self.atk_dmg, self.atk_type)
+			self.attack_sound.play()
 		elif self.status == 'move':
 			pass
 			self.direction = self.player_dist_direc(player)[1]
@@ -99,6 +107,7 @@ class Enemy(Entity):
 
 	def get_damage(self, player, atk_sprite_type):
 		if self.vulnerable:
+			self.struck_sound.play()
 			self.direction = self.player_dist_direc(player)[1]
 			dmg = player.get_damage(atk_sprite_type)[0]
 			hknock = player.get_damage(atk_sprite_type)[1]
@@ -116,6 +125,7 @@ class Enemy(Entity):
 		if self.health <= 0:
 			self.kill()
 			self.add_exp(amount = self.exp)
+			self.death_sound.play()
 			self.death_particles(self.rect.center, self.name)
 
 	def struck(self, hit_knockback):
