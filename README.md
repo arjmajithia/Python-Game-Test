@@ -9,4 +9,4 @@ a lot of modulo\
 To Change:\
 Add additional functionality (more weapons, more magic)\
 Change graphics to own graphics\
-Change tilesize to 32}
+Change tilesize to 32
