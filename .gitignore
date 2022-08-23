@@ -9,3 +9,6 @@
 *.xdv
 *.venv
 *.vscode
+__pycache__/
+*.code-workspace
+*sublime-workspace
